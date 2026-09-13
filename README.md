@@ -436,7 +436,7 @@ JavaScript 파일을 함께 사용하기 위해 `tsconfig.app.json`은 아래 �
 10단계: 전체 UI 개선 및 오류 처리
 ```
 
-우선 구현 범위는 **Dashboard → Geolocation → 기상청 → AirKorea → Kakao** 순서입니다.
+우선 구현 범위는 **Dashboard와 매인 페이지 → Geolocation → 기상청 → AirKorea → Kakao** 순서입니다.
 
 ## 최종 구조
 
