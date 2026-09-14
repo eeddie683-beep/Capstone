@@ -1,3 +1,5 @@
+import './Landing.css'
+
 const features = ['실시간 위치 확인', '날씨 & 대기질 분석', '맞춤형 운동 정보', '주변 운동 장소 탐색', '즐겨찾기', '운동 기록 관리']
 
 export default function Landing() {
@@ -58,3 +60,4 @@ export default function Landing() {
     </div>
   )
 }
+
