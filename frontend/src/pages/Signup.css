@@ -1,0 +1,439 @@
+* {
+  box-sizing: border-box;
+}
+
+.signup-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #ededed;
+  padding: 40px 20px;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+}
+
+.signup-container {
+  width: min(100%, 920px);
+  min-height: 700px;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .18);
+}
+
+/* =========================
+   왼쪽 영역
+========================= */
+
+.signup-left {
+  background: linear-gradient(165deg, #2b2b2b 0%, #000 100%);
+  color: #fff;
+  padding: 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left-content {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 70px;
+}
+
+.logo-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .12);
+  font-size: 17px;
+}
+
+.signup-left h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -.5px;
+}
+
+.left-description {
+  color: #c7c7c7;
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin: 20px 0 38px;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #e5e5e5;
+}
+
+.feature-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  font-size: 14px;
+}
+
+/* =========================
+   오른쪽 영역
+========================= */
+
+.signup-right {
+  padding: 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #fff;
+}
+
+.signup-form {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+/* 제목 */
+
+.form-title {
+  margin-bottom: 24px;
+}
+
+.form-title h2 {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 750;
+  color: #111;
+}
+
+.form-title p {
+  margin: 6px 0 0;
+  color: #737373;
+  font-size: 12px;
+}
+
+/* =========================
+   입력창
+========================= */
+
+.name-row {
+  display: flex;
+  gap: 10px;
+}
+
+.name-row .input-group {
+  width: 50%;
+}
+
+.input-group {
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+  color: #262626;
+  margin-bottom: 7px;
+}
+
+.input-box,
+.email-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.input-box:focus-within,
+.email-box:focus-within {
+  border-color: #171717;
+  background: #fff;
+}
+
+.input-icon {
+  color: #a3a3a3;
+  font-size: 13px;
+  margin-right: 9px;
+  flex-shrink: 0;
+}
+
+.input-box input,
+.email-box input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 12px;
+  color: #171717;
+}
+
+.input-box input::placeholder,
+.email-box input::placeholder {
+  color: #b5b5b5;
+}
+
+/* =========================
+   비밀번호 눈 버튼
+========================= */
+
+.eye {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 5px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: #a3a3a3;
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.eye:hover {
+  color: #171717;
+  background: #f0f0f0;
+}
+
+/* =========================
+   이메일 확인
+========================= */
+
+.email-box {
+  background: #fafafa;
+}
+
+.email-check-button {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border: none;
+  border-radius: 7px;
+  background: #171717;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.email-check-button:hover {
+  background: #000;
+}
+
+.email-check {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #333;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* =========================
+   약관 동의
+========================= */
+
+.agree-box {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  background: #fafafa;
+}
+
+.all-agree {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #222;
+  cursor: pointer;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 7px;
+  padding-bottom: 8px;
+}
+
+.all-agree input,
+.agree-line input {
+  display: none;
+}
+
+.custom-check,
+.small-check {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+}
+
+.custom-check {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.small-check {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.all-agree input:checked + .custom-check,
+.agree-line input:checked + .small-check {
+  background: #171717;
+  border-color: #171717;
+}
+
+.all-agree input:checked + .custom-check::after,
+.agree-line input:checked + .small-check::after {
+  content: "✓";
+  color: #fff;
+  font-size: 8px;
+  font-weight: bold;
+}
+
+.agree-line {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #666;
+}
+
+.agree-line label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.agree-line button {
+  border: none;
+  background: none;
+  color: #737373;
+  font-size: 9px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.agree-line button:hover {
+  color: #111;
+}
+
+.optional {
+  color: #999;
+}
+
+/* =========================
+   회원가입 버튼
+========================= */
+
+.signup-button {
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #171717;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.signup-button:hover {
+  background: #000;
+}
+
+.signup-button span {
+  margin-left: 7px;
+  font-size: 15px;
+}
+
+/* =========================
+   로그인 링크
+========================= */
+
+.login-link {
+  margin: 24px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: #737373;
+}
+
+.login-link button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 5px;
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-link button:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   모바일
+========================= */
+
+@media (max-width: 760px) {
+  .signup-container {
+    grid-template-columns: 1fr;
+  }
+
+  .signup-left {
+    display: none;
+  }
+
+  .signup-right {
+    padding: 40px 28px;
+  }
+
+  .signup-form {
+    max-width: 360px;
+  }
+}
