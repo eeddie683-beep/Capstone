@@ -4,56 +4,55 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 import Dashboard from "./pages/Dashboard";
-import ExerciseInfo from "./pages/ExerciseInfo";
-import NearbyPlaces from "./pages/NearbyPlaces";
-import Favorites from "./pages/Favorites";
 
 import "./App.css";
 
-// type Page = "landing" | "login" | "signup";
-
-// export default function App() {
-//   const [page, setPage] = useState<Page>("landing");
-
-//   // 로그인 화면
-//   if (page === "login") {
-//     return (
-//       <Login
-//         onNavigateSignup={() => setPage("signup")}
-//       />
-//     );
-//   }
-
-//   // 회원가입 화면
-//   if (page === "signup") {
-//     return (
-//       <Signup
-//         onNavigateLogin={() => setPage("login")}
-//       />
-//     );
-//   }
-
-//   return (
-//     <Landing
-//       onNavigateLogin={() => setPage("login")}
-//       onNavigateSignup={() => setPage("signup")}
-//     />
-//   );
-// }
-
+type Page = "landing" | "login" | "signup" | "dashboard";
 
 export default function App() {
-  switch (window.location.pathname.replace(/\/+$/, "") || "/") {
-    case "/exercise":
-      return <ExerciseInfo />;
+  const initialPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const initialPage: Page = initialPath === "/login" ? "login" : initialPath === "/signup" ? "signup" : initialPath === "/dashboard" ? "dashboard" : "landing";
+  const [page, setPage] = useState<Page>(initialPage);
 
-    case "/places":
-      return <NearbyPlaces />;
-
-    case "/favorites":
-      return <Favorites />;
-
-    default:
-      return <Dashboard />;
+  // 로그인 화면
+  if (page === "login") {
+    return (
+      <Login
+        onLoginSuccess={() => setPage("dashboard")}
+        onNavigateSignup={() => setPage("signup")}
+      />
+    );
   }
+
+  // 회원가입 화면
+  if (page === "signup") {
+    return (
+      <Signup
+        onNavigateLogin={() => setPage("login")}
+      />
+    );
+  }
+
+  if (page === "dashboard") {
+    return <Dashboard />;
+  }
+
+  return <Landing />;
 }
+
+
+// export default function App() {
+//   switch (window.location.pathname.replace(/\/+$/, "") || "/") {
+//     case "/exercise":
+//       return <ExerciseInfo />;
+
+//     case "/places":
+//       return <NearbyPlaces />;
+
+//     case "/favorites":
+//       return <Favorites />;
+
+//     default:
+//       return <Dashboard />;
+//   }
+// }

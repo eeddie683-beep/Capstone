@@ -1,0 +1,46 @@
+# FitMap API 연결
+
+## 실행
+
+1. `.env.example`을 `.env.local`로 복사합니다.
+2. `KAKAO_REST_API_KEY`에 카카오 앱의 REST API 키를 입력합니다.
+3. `KMA_SERVICE_KEY`에 공공데이터포털 기상청 단기예보 조회서비스의 **일반 인증키(Decoding)** 를 입력합니다.
+4. `npm run dev`를 재시작합니다.
+5. 대시보드에서 **내 위치 사용**을 누르고 브라우저 위치 권한을 허용합니다.
+
+Geolocation은 별도 키가 없습니다. localhost 또는 HTTPS에서 사용합니다.
+위치는 버튼을 누를 때만 요청하며, 좌표는 날씨·주소·주변 장소 조회에 사용합니다.
+위치를 거부하거나 조회에 실패하면 오류를 표시하며, 서울 등의 임의 좌표로 바꾸지 않습니다.
+
+## 신청할 서비스
+
+- 카카오 [로컬 API](https://developers.kakao.com/docs/latest/ko/local/dev-guide): 좌표→행정구역, 키워드 주변 장소 검색. 앱의 사용 권한·쿼터를 확인하세요. 현재 화면은 검색 결과와 카카오맵 링크를 사용하므로 지도 JavaScript SDK 키는 필요 없습니다.
+- [기상청 단기예보 조회서비스](https://www.data.go.kr/data/15084084/openapi.do): 초단기실황(getUltraSrtNcst)과 단기예보(getVilageFcst). API허브의 authKey와는 다른 인증키입니다.
+- [Geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition): 브라우저 위치 조회.
+
+## 데이터 의미
+
+- 온도·습도·풍속: 최신 가용 초단기실황 관측값. 화면에 관측 시각(KST)을 표시합니다.
+- 강수확률·강수가 없는 경우 하늘상태: 현재 시간대의 단기예보. 강수 중에는 관측 강수형태를 우선합니다.
+- 발표 지연을 고려하여 실황은 40분, 단기예보는 70분의 여유를 두고 발표 시각을 선택합니다. API에서 아직 자료를 제공하지 않으면 오류를 표시합니다.
+- 체감온도·자외선·미세먼지·오존은 이 연결에서 제공하지 않습니다. 대기질은 별도 API가 필요합니다.
+- 운동 추천 수치는 화면 예시이며 기상청에서 계산한 값이 아닙니다.
+- 주변 장소는 선택 운동에 따른 키워드, 반경 10km, 직선거리 기준입니다. 검색 결과만으로 무료 여부를 판단하지 않습니다.
+
+## 구조 및 배포
+
+브라우저 → `/api/fitmap/weather`, `/region`, `/places` → 서버 → 기상청/카카오
+
+키는 서버 코드에서만 읽습니다. `VITE_` 접두사를 붙이지 마세요. `.env.local`은 Git 제외 대상입니다.
+현재 서버는 Vite 개발/preview 미들웨어입니다. **정적 dist 파일만 배포하면 API가 동작하지 않습니다.**
+운영 시 팀 백엔드에 `server/api.ts`의 요청·정규화 로직을 옮겨 같은 경로를 제공하고, 사용자 인증·요청 제한을 추가하세요.
+클라이언트 요청 취소와 서버 외부 호출 시간 제한을 적용했습니다. 외부 API 오류 원문이나 인증키는 브라우저 응답에 포함하지 않습니다.
+
+## 확인
+
+```sh
+node --experimental-strip-types --test server/api.test.ts
+npm run build
+```
+
+테스트는 합성 응답을 사용하며 실서비스 키 유효성·활용 승인까지 검증하지 않습니다.
