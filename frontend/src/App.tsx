@@ -12,83 +12,49 @@ import Favorites from "./pages/Favorites";
 import "./App.css";
 
 type Page =
-  | "landing"
-  | "login"
-  | "signup"
-  | "dashboard"
-  | "exercise"
-  | "places"
-  | "favorites";
+| "landing"
+| "login"
+| "signup"
+| "exercise"
+| "dashboard"
+| "places"
+| "favorites";
 
 export default function App() {
-  const initialPath =
-    window.location.pathname.replace(/\/+$/, "") || "/";
+const [page, setPage] = useState<Page>("favorites");
 
-  const getInitialPage = (): Page => {
-    switch (initialPath) {
-      case "/login":
-        return "login";
+if (page === "login") {
+return (
+<Login
+onLoginSuccess={() => setPage("exercise")}
+onNavigateSignup={() => setPage("signup")}
+/>
+);
+}
 
-      case "/signup":
-        return "signup";
+if (page === "signup") {
+return (
+<Signup
+onNavigateLogin={() => setPage("login")}
+/>
+);
+}
 
-      case "/dashboard":
-        return "dashboard";
+if (page === "exercise") {
+return <ExerciseInfo />;
+}
 
-      case "/exercise":
-        return "exercise";
+if (page === "dashboard") {
+return <Dashboard />;
+}
 
-      case "/places":
-        return "places";
+if (page === "places") {
+return <NearbyPlaces />;
+}
 
-      case "/favorites":
-        return "favorites";
-
-      default:
-        return "landing";
-    }
-  };
-
-  const [page, setPage] = useState<Page>(getInitialPage());
-
-  // 로그인
-  if (page === "login") {
-    return (
-      <Login
-        onLoginSuccess={() => setPage("dashboard")}
-        onNavigateSignup={() => setPage("signup")}
-      />
-    );
-  }
-
-  // 회원가입
-  if (page === "signup") {
-    return (
-      <Signup
-        onNavigateLogin={() => setPage("login")}
-      />
-    );
-  }
-
-  // 대시보드
-  if (page === "dashboard") {
-    return <Dashboard />;
-  }
-
-  // 운동 정보
-  if (page === "exercise") {
-    return <ExerciseInfo />;
-  }
-
-  // 주변 운동 장소
-  if (page === "places") {
-    return <NearbyPlaces />;
-  }
-
-  // 즐겨찾기
-  if (page === "favorites") {
-    return <Favorites />;
-  }
+if (page === "favorites") {
+return <Favorites />;
+}
 
   // 랜딩 페이지
   return <Landing />;
