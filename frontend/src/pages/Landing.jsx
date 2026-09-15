@@ -9,7 +9,46 @@ const features = [
   '운동 기록 관리'
 ]
 
-export default function Landing({ onNavigateLogin }) {
+const steps = [
+  {
+    title: '위치 권한 허용',
+    description: (
+      <>
+        브라우저의 위치 권한을
+        <br />
+        허용하면 자동으로 현재
+        <br />
+        위치를 감지합니다.
+      </>
+    )
+  },
+  {
+    title: '날씨 & 장소 분석',
+    description: (
+      <>
+        실시간 날씨·대기질과
+        <br />
+        주변 운동 장소를 자동으로
+        <br />
+        분석해 불러옵니다.
+      </>
+    )
+  },
+  {
+    title: '운동 시작!',
+    description: (
+      <>
+        맞춤 운동 정보를 바탕으로
+        <br />
+        최적의 장소에서
+        <br />
+        운동을 시작하세요.
+      </>
+    )
+  }
+]
+
+export default function Landing() {
   return (
     <div className="landing">
 
@@ -25,19 +64,23 @@ export default function Landing({ onNavigateLogin }) {
           <a href="#how-it-works">이용 방법</a>
         </nav>
 
-        <button
-          type="button"
+        <a
           className="placeholder-label"
-          onClick={onNavigateLogin}
+          href="/login"
+          style={{
+            textDecoration: 'none',
+            color: 'inherit'
+          }}
         >
           로그인 / 회원가입
-        </button>
+        </a>
 
       </header>
 
 
       <main className="landing-main">
 
+        {/* 메인 소개 */}
         <section
           className="landing-hero"
           id="intro"
@@ -50,24 +93,39 @@ export default function Landing({ onNavigateLogin }) {
             </p>
 
             <h1 id="intro-title">
-              서비스 메인 문구 영역
+              내 위치에서 시작하는
+              <br />
+              스마트 운동가이드
             </h1>
 
             <p className="placeholder-copy">
-              서비스 소개 및 설명 문구
+              현재 위치의 날씨·대기질을 실시간으로 분석하고
+              <br />
+              주변 운동 장소와 맞춤형 운동 정보를 한 번에 제공합니다.
             </p>
 
-            <div className="placeholder-actions">
-              시작하기 / 서비스 둘러보기 버튼 영역
-            </div>
-
             <div
-              className="landing-stats"
-              aria-label="서비스 통계 자리"
+              className="action-buttons-group"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '12px',
+                marginBottom: '32px'
+              }}
             >
-              <span>통계 영역 1</span>
-              <span>통계 영역 2</span>
-              <span>통계 영역 3</span>
+              <a
+                href="/dashboard"
+                className="placeholder-actions"
+              >
+                지금 내 위치에서 시작하기
+              </a>
+
+              <a
+                href="#features"
+                className="placeholder-actions"
+              >
+                서비스 둘러보기
+              </a>
             </div>
 
             <div className="wireframe preview-placeholder">
@@ -78,6 +136,7 @@ export default function Landing({ onNavigateLogin }) {
         </section>
 
 
+        {/* 주요 기능 */}
         <section
           className="landing-section"
           id="features"
@@ -90,7 +149,7 @@ export default function Landing({ onNavigateLogin }) {
             </p>
 
             <h2 id="features-title">
-              주요 기능 소개 영역
+              FitMap이 제공하는 모든 것
             </h2>
 
             <div className="landing-grid feature-grid">
@@ -111,6 +170,7 @@ export default function Landing({ onNavigateLogin }) {
         </section>
 
 
+        {/* 이용 방법 */}
         <section
           className="landing-section tinted"
           id="how-it-works"
@@ -128,24 +188,18 @@ export default function Landing({ onNavigateLogin }) {
 
             <div className="landing-grid">
 
-              {[
-                '위치 권한 허용',
-                '날씨 & 장소 분석',
-                '운동 시작'
-              ].map((step, index) => (
+              {steps.map((step, index) => (
                 <div
                   className="step-placeholder"
-                  key={step}
+                  key={step.title}
                 >
                   <span className="step-number">
                     {index + 1}
                   </span>
 
-                  <h3>{step}</h3>
+                  <h3>{step.title}</h3>
 
-                  <p>
-                    단계별 설명 영역
-                  </p>
+                  <p>{step.description}</p>
                 </div>
               ))}
 
@@ -155,41 +209,7 @@ export default function Landing({ onNavigateLogin }) {
         </section>
 
 
-        <section
-          className="landing-section"
-          aria-labelledby="reviews-title"
-        >
-          <div className="landing-container">
-
-            <p className="section-label">
-              04 · 사용자 후기 구역
-            </p>
-
-            <h2 id="reviews-title">
-              사용자 후기 영역
-            </h2>
-
-            <div className="landing-grid">
-
-              {[1, 2, 3].map((item) => (
-                <div
-                  className="wireframe review-placeholder"
-                  key={item}
-                >
-                  후기 카드 {item}
-
-                  <p>
-                    평점 / 후기 내용 / 사용자 정보
-                  </p>
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-        </section>
-
-
+        {/* 시작하기 */}
         <section
           className="landing-section cta-placeholder"
           aria-labelledby="cta-title"
@@ -197,19 +217,40 @@ export default function Landing({ onNavigateLogin }) {
           <div className="landing-container">
 
             <p className="section-label">
-              05 · 시작하기 구역
+              04 · 시작하기 구역
             </p>
 
             <h2 id="cta-title">
-              서비스 시작 안내 영역
+              지금 바로 시작해보세요
             </h2>
 
             <p className="placeholder-copy">
-              가입 유도 문구
+              위치 권한 하나만 허용하면 나머지는 FitMap이 알아서 해드립니다.
+              <br />
+              오늘의 날씨와 최적의 운동 장소를 지금 확인해보세요.
             </p>
 
-            <div className="placeholder-actions">
-              무료로 시작하기 / 로그인 버튼 영역
+            <div
+              className="action-buttons-group"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '12px'
+              }}
+            >
+              <a
+                href="/signup"
+                className="placeholder-actions"
+              >
+                무료로 시작하기
+              </a>
+
+              <a
+                href="/login"
+                className="placeholder-actions"
+              >
+                로그인
+              </a>
             </div>
 
           </div>
@@ -224,7 +265,7 @@ export default function Landing({ onNavigateLogin }) {
 
           <div>
             <strong>FitMap</strong>
-            <p>06 · 푸터 구역</p>
+            <p>05 · 푸터 구역</p>
           </div>
 
           <div>
