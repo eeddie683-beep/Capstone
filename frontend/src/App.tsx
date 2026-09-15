@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Landing from "./pages/Landing";
+// import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -21,6 +21,7 @@ type Page =
 | "favorites";
 
 export default function App() {
+
 const [page, setPage] = useState<Page>("favorites");
 
 if (page === "login") {
@@ -58,4 +59,3 @@ return <Favorites />;
 
   // 랜딩 페이지
   return <Landing />;
-}
