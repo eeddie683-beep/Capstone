@@ -15,25 +15,53 @@ type Page =
   | "landing"
   | "login"
   | "signup"
-  | "exercise"
   | "dashboard"
+  | "exercise"
   | "places"
   | "favorites";
 
 export default function App() {
-  const [page, setPage] = useState<Page>("landing");
+  const initialPath =
+    window.location.pathname.replace(/\/+$/, "") || "/";
 
-  // 로그인 화면
+  const getInitialPage = (): Page => {
+    switch (initialPath) {
+      case "/login":
+        return "login";
+
+      case "/signup":
+        return "signup";
+
+      case "/dashboard":
+        return "dashboard";
+
+      case "/exercise":
+        return "exercise";
+
+      case "/places":
+        return "places";
+
+      case "/favorites":
+        return "favorites";
+
+      default:
+        return "landing";
+    }
+  };
+
+  const [page, setPage] = useState<Page>(getInitialPage());
+
+  // 로그인
   if (page === "login") {
     return (
       <Login
-        onLoginSuccess={() => setPage("exercise")}
+        onLoginSuccess={() => setPage("dashboard")}
         onNavigateSignup={() => setPage("signup")}
       />
     );
   }
 
-  // 회원가입 화면
+  // 회원가입
   if (page === "signup") {
     return (
       <Signup
@@ -42,14 +70,14 @@ export default function App() {
     );
   }
 
-  // 운동 정보
-  if (page === "exercise") {
-    return <ExerciseInfo />;
-  }
-
   // 대시보드
   if (page === "dashboard") {
     return <Dashboard />;
+  }
+
+  // 운동 정보
+  if (page === "exercise") {
+    return <ExerciseInfo />;
   }
 
   // 주변 운동 장소
@@ -62,10 +90,6 @@ export default function App() {
     return <Favorites />;
   }
 
-  // 처음 화면
-  return (
-    <Landing
-      onNavigateLogin={() => setPage("login")}
-    />
-  );
+  // 랜딩 페이지
+  return <Landing />;
 }
