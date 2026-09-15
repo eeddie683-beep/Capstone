@@ -1,4 +1,5 @@
 import "./Favorites.scss";
+import Sidebar from "../components/layout/Sidebar";
 
 const favoritePlaces = [
 {
@@ -72,7 +73,8 @@ icon: "🏃",
 export default function Favorites() {
 return (
 <div className="favorites-page">
-    <aside className="favorites-sidebar">
+    <Sidebar />
+    <aside className="favorites-sidebar legacy-favorites-sidebar">
     <div className="favorites-logo">
       <span>⌁</span>
       FitMap

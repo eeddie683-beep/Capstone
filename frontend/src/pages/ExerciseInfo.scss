@@ -574,3 +574,17 @@ section {
     padding: 18px 10px;
   }
 }
+
+.dashboard-exercise .exercise-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.dashboard-exercise .exercise-hero { border: 0; color: white; background: linear-gradient(140deg, var(--exercise-color), #6655ef); }
+.dashboard-exercise .exercise-hero-icon { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 20px; background: #ffffff22; margin-bottom: 20px; }
+.dashboard-exercise .exercise-hero h2 { font-size: 30px; margin: 14px 0 8px; }
+.dashboard-exercise .exercise-hero p { opacity: .82; }
+.dashboard-exercise .exercise-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 28px; }
+.dashboard-exercise .exercise-metrics div { padding: 14px 8px; text-align: center; border-radius: 9px; background: #ffffff18; }
+.dashboard-exercise .exercise-metrics b, .dashboard-exercise .exercise-metrics small { display: block; }
+.dashboard-exercise .exercise-metrics small { font-size: 12px; opacity: .72; margin-top: 4px; }
+.dashboard-exercise .exercise-tips { display: grid; gap: 12px; margin-top: 24px; }
+.dashboard-exercise .exercise-tips div { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 9px; background: #f8f9fd; }
+.dashboard-exercise .exercise-tips span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: white; background: #675cf3; }
+@media (max-width: 760px) { .dashboard-exercise .exercise-info-grid { grid-template-columns: 1fr; } }

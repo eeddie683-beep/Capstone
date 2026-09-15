@@ -32,6 +32,9 @@ export default function Sidebar() {
     return () => { document.body.style.overflow = previous }
   }, [open])
 
+  const currentPath = window.location.hash === '#weather' ? '/weather' : window.location.pathname.replace(/\/+$/, '') || '/dashboard'
+  const isActive = (path: string) => currentPath === path
+
   const contents = (
     <>
       <a className="logo" href="/dashboard">
@@ -39,11 +42,11 @@ export default function Sidebar() {
         <strong>FitMap</strong>
       </a>
       <nav aria-label="주 메뉴" onClick={closeMenu}>
-        <a href="/dashboard"><Icon name="home" />홈</a>
-        <a className="active" href="/dashboard#weather"><Icon name="pin" />내 위치 / 날씨</a>
-        <a href="/exercise"><Icon name="activity" />운동 정보</a>
-        <a href="/places"><Icon name="map" />주변 장소</a>
-        <a href="/favorites"><Icon name="star" />즐겨찾기</a>
+        <a className={isActive('/dashboard') ? 'active' : ''} href="/dashboard"><Icon name="home" />홈</a>
+        <a className={isActive('/weather') ? 'active' : ''} href="/dashboard#weather"><Icon name="pin" />내 위치 / 날씨</a>
+        <a className={isActive('/exercise') ? 'active' : ''} href="/exercise"><Icon name="activity" />운동 정보</a>
+        <a className={isActive('/places') ? 'active' : ''} href="/places"><Icon name="map" />주변 장소</a>
+        <a className={isActive('/favorites') ? 'active' : ''} href="/favorites"><Icon name="star" />즐겨찾기</a>
       </nav>
       <div className="profile"><span className="avatar">김</span><div><b>김민수</b><small>사용자 계정</small></div><button aria-label="설정"><Icon name="settings" size={15} /></button></div>
     </>

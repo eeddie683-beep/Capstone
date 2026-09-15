@@ -58,7 +58,7 @@ export function createApiHandler(config: Config) {
           url.searchParams.set('query', queries[request.searchParams.get('exercise') ?? ''] ?? '공원')
           url.searchParams.set('radius', '10000')
           url.searchParams.set('sort', 'distance')
-          url.searchParams.set('size', '5')
+          url.searchParams.set('size', '3')
         }
         const data = await upstream<{ documents: Record<string, string>[] }>(url, { Authorization: `KakaoAK ${config.KAKAO_REST_API_KEY}` })
         if (!Array.isArray(data.documents)) throw new ApiError(502, '카카오 장소 응답 형식이 올바르지 않습니다.')

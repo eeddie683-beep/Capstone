@@ -431,3 +431,72 @@ display: none;
 }
 }
 }
+.legacy-favorites-sidebar { display: none !important; }
+
+/* 공통 Dashboard Sidebar에 맞춘 본문 레이아웃 */
+.favorites-page {
+  background: #f1f4ff;
+  color: #202942;
+  font-family: Inter, 'Pretendard', 'Malgun Gothic', sans-serif;
+}
+
+.favorites-page .favorites-main {
+  margin-left: 224px;
+  width: calc(100% - 224px);
+  background: #f1f4ff;
+}
+
+.favorites-page .favorites-header {
+  height: auto;
+  min-height: 88px;
+  padding: 25px 28px 20px;
+  background: transparent;
+  border: 0;
+}
+
+.favorites-page .favorites-content {
+  padding: 0 28px 32px;
+}
+
+.favorites-page .favorite-card,
+.favorites-page .favorites-summary,
+.favorites-page .favorites-top {
+  border-radius: 14px;
+}
+
+@media (max-width: 1000px) {
+  .favorites-page { display: block; min-height: 100vh; }
+  .favorites-page .favorites-main { margin-left: 0; width: 100%; }
+  .favorites-page .favorites-header { padding: 20px 14px; }
+  .favorites-page .favorites-content { padding: 0 14px 24px; }
+}
+
+@media (min-width: 601px) and (max-width: 1000px) {
+  .favorites-page .favorites-header { min-height: 86px; }
+}
+
+@media (max-width: 600px) {
+  .favorites-page .favorites-header {
+    min-height: 78px;
+    padding: 16px 14px;
+  }
+  .favorites-page .favorites-header h1 { font-size: 22px; }
+  .favorites-page .favorites-header .header-user { display: none; }
+  .favorites-page .favorites-content { padding: 0 14px 20px; }
+  .favorites-page .favorites-top { margin-bottom: 16px; gap: 10px; }
+  .favorites-page .favorite-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .favorites-page .favorite-card .place-image { height: 116px; }
+  .favorites-page .favorite-card .place-info { padding: 14px; }
+  .favorites-page .favorite-card .place-title h3 { font-size: 16px; }
+  .favorites-page .favorite-card .favorite-actions { flex-wrap: wrap; gap: 8px; }
+}
+
+/* 모바일 실제 뷰포트에서는 항상 카드 한 장씩 표시 */
+@media (max-width: 760px) {
+  .favorites-page .favorites-header .header-user { display: none !important; }
+  .favorites-page .favorite-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+  .favorites-page .favorite-card { width: 100%; }
+}

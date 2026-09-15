@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import nearbyPlacesStyles from './NearbyPlaces.scss?inline'
+import Sidebar from '../components/layout/Sidebar'
 
 /**
  * 주변 운동 장소 페이지
@@ -83,20 +84,7 @@ export default function NearbyPlaces() {
     <>
       <style>{nearbyPlacesStyles}</style>
       <div className="dashboard">
-        <aside className="side">
-          <a className="logo" href="/">
-            <Icon name="activity" size={24} />
-            <strong>FitMap</strong>
-          </a>
-          <nav aria-label="주 메뉴">
-            <a href="/"><Icon name="home" />홈</a>
-            <a href="/#weather"><Icon name="pin" />내 위치 / 날씨</a>
-            <a href="/exercise"><Icon name="activity" />운동 정보</a>
-            <a className="active" href="/places"><Icon name="map" />주변 장소</a>
-            <a href="/favorites"><Icon name="star" />즐겨찾기</a>
-          </nav>
-          <div className="profile"><span className="avatar">김</span><div><b>김민수</b><small>사용자 계정</small></div><button aria-label="설정"><Icon name="settings" size={15} /></button></div>
-        </aside>
+        <Sidebar />
 
         <main className="content">
           <header className="welcome">

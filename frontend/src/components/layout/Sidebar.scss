@@ -19,6 +19,7 @@
     font-size: 23px;
   }
 
+
   nav {
     padding: 16px 14px;
     display: grid;
@@ -108,7 +109,11 @@
     background: #172136;
     color: white;
 
-    a { font-size: 22px; font-weight: 700; }
+    a {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
     button {
       min-height: 44px;
       padding: 8px 14px;
@@ -130,10 +135,22 @@
     max-height: 100dvh;
     overflow-y: auto;
 
-    &[open] { display: flex; }
-    &::backdrop { background: #0f172a88; }
-    .logo { padding-right: 64px; flex-shrink: 0; }
-    nav a { min-height: 48px; }
+    &[open] {
+      display: flex;
+    }
+
+    &::backdrop {
+      background: #0f172a88;
+    }
+
+    .logo {
+      padding-right: 64px;
+      flex-shrink: 0;
+    }
+
+    nav a {
+      min-height: 48px;
+    }
   }
 
   .sidebar-dialog-content {
@@ -159,7 +176,9 @@
 }
 
 @media (max-width: 600px) {
-  .fitmap-sidebar.mobile-sidebar { width: 100%; }
+  .fitmap-sidebar.mobile-sidebar {
+    width: 100%;
+  }
 }
 
 .menu-lines {
@@ -177,18 +196,37 @@
     background: currentColor;
     transition: transform 240ms ease, opacity 240ms ease;
   }
-  span:nth-child(1) { top: 1px; }
-  span:nth-child(2) { top: 9px; }
-  span:nth-child(3) { top: 17px; }
+
+  span:nth-child(1) {
+    top: 1px;
+  }
+
+  span:nth-child(2) {
+    top: 9px;
+  }
+
+  span:nth-child(3) {
+    top: 17px;
+  }
 }
 
 .is-open .menu-lines {
-  span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-  span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+  span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
 }
 
 @media (max-width: 1000px) {
+
   .sidebar-toolbar .menu-toggle,
   .sidebar-close.menu-toggle {
     display: grid;
@@ -203,15 +241,24 @@
     background: transparent;
     pointer-events: auto;
 
-    &::backdrop { animation: menu-backdrop-in 240ms ease both; }
-    &.is-closing::backdrop { animation: menu-backdrop-out 240ms ease both; }
+    &::backdrop {
+      animation: menu-backdrop-in 240ms ease both;
+    }
+
+    &.is-closing::backdrop {
+      animation: menu-backdrop-out 240ms ease both;
+    }
+
     .sidebar-dialog-content {
       width: 300px;
       max-width: 100%;
       background: #172136;
       animation: menu-slide-in 240ms ease both;
     }
-    &.is-closing .sidebar-dialog-content { animation: menu-slide-out 240ms ease both; }
+
+    &.is-closing .sidebar-dialog-content {
+      animation: menu-slide-out 240ms ease both;
+    }
   }
 
   .sidebar-close.menu-toggle {
@@ -224,23 +271,72 @@
   }
 
   @starting-style {
+
     .is-open .menu-lines span:nth-child(1),
-    .is-open .menu-lines span:nth-child(3) { transform: none; }
-    .is-open .menu-lines span:nth-child(2) { opacity: 1; transform: none; }
+    .is-open .menu-lines span:nth-child(3) {
+      transform: none;
+    }
+
+    .is-open .menu-lines span:nth-child(2) {
+      opacity: 1;
+      transform: none;
+    }
   }
 }
 
 @media (max-width: 600px) {
-  .fitmap-sidebar.mobile-sidebar .sidebar-dialog-content { width: 100%; }
+  .fitmap-sidebar.mobile-sidebar .sidebar-dialog-content {
+    width: 100%;
+  }
 }
 
-@keyframes menu-slide-in { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-@keyframes menu-slide-out { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-@keyframes menu-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes menu-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes menu-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes menu-slide-out {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes menu-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menu-backdrop-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .menu-lines span { transition: none; }
+  .menu-lines span {
+    transition: none;
+  }
+
   .fitmap-sidebar.mobile-sidebar .sidebar-dialog-content,
-  .fitmap-sidebar.mobile-sidebar::backdrop { animation-duration: 0.01ms !important; }
+  .fitmap-sidebar.mobile-sidebar::backdrop {
+    animation-duration: 0.01ms !important;
+  }
 }
