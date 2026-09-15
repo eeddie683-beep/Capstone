@@ -1,0 +1,339 @@
+/* Login: 시안과 동일한 레이아웃, 색상은 무채색(흑백/회색)으로 처리 */
+
+.login-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: #ededed;
+    padding: 40px 20px;
+}
+
+.login-container {
+    width: min(100%, 920px);
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .18);
+}
+
+/* 좌측: 서비스 소개 */
+.login-visual {
+    background: linear-gradient(165deg, #2b2b2b 0%, #000 100%);
+    color: #fff;
+    padding: 52px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+}
+
+.login-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.login-logo-mark {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .12);
+}
+
+.login-visual h1 {
+    font-size: 30px;
+    font-weight: 750;
+    line-height: 1.35;
+    letter-spacing: -.5px;
+}
+
+.login-visual .placeholder-copy {
+    color: #c7c7c7;
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.login-stats {
+    display: flex;
+    gap: 26px;
+    margin-top: 10px;
+}
+
+.login-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.login-stats strong {
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.login-stats span {
+    font-size: 11px;
+    color: #a3a3a3;
+}
+
+.login-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    width: fit-content;
+    padding: 9px 14px;
+    margin-top: 8px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .06);
+    color: #e5e5e5;
+    font-size: 11.5px;
+}
+
+/* 우측: 로그인 폼 */
+.login-form-area {
+    padding: 52px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-form-area h2 {
+    font-size: 23px;
+    font-weight: 750;
+    color: #111;
+}
+
+.login-subtitle {
+    color: #737373;
+    font-size: 13px;
+    margin: 6px 0 26px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 650;
+    color: #262626;
+    margin-bottom: 7px;
+}
+
+.form-field-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 7px;
+}
+
+.form-field-label-row label {
+    margin-bottom: 0;
+}
+
+.link-muted {
+    font-size: 11.5px;
+    color: #8a8a8a;
+}
+
+.link-muted:hover {
+    color: #111;
+}
+
+.input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrap svg {
+    position: absolute;
+    left: 13px;
+    color: #a3a3a3;
+    pointer-events: none;
+}
+
+.input-wrap input {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #fafafa;
+    font-size: 13.5px;
+    color: #171717;
+}
+
+.input-wrap input::placeholder {
+    color: #b5b5b5;
+}
+
+.input-wrap input:focus {
+    outline: none;
+    border-color: #171717;
+    background: #fff;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    color: #a3a3a3;
+    border-radius: 6px;
+}
+
+.password-toggle:hover {
+    color: #171717;
+    background: #f0f0f0;
+}
+
+.login-form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkbox-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #404040;
+}
+
+.checkbox-field input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: #171717;
+}
+
+.field-error {
+    margin: 6px 0 0;
+    font-size: 11.5px;
+    font-weight: 650;
+    color: #171717;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.form-error {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid #d4d4d4;
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: #171717;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.submit-button {
+    margin-top: 4px;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #171717;
+    color: #fff;
+    font-size: 14.5px;
+    font-weight: 700;
+}
+
+.submit-button:hover:not(:disabled) {
+    background: #000;
+}
+
+.submit-button:disabled {
+    background: #a3a3a3;
+    cursor: not-allowed;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+    color: #a3a3a3;
+    font-size: 11.5px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e5e5e5;
+}
+
+.kakao-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #f5f5f5;
+    color: #a3a3a3;
+    font-size: 13.5px;
+    font-weight: 650;
+    cursor: not-allowed;
+}
+
+.kakao-icon-circle {
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: #d4d4d4;
+    color: #737373;
+    font-size: 10.5px;
+    font-weight: 750;
+}
+
+.signup-prompt {
+    margin: 24px 0 0;
+    text-align: center;
+    font-size: 12.5px;
+    color: #737373;
+}
+
+.signup-prompt a {
+    color: #111;
+    font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    .login-container {
+        grid-template-columns: 1fr;
+    }
+
+    .login-visual {
+        padding: 36px 28px;
+    }
+
+    .login-form-area {
+        padding: 36px 28px;
+    }
+
+    .login-visual h1 {
+        font-size: 24px;
+    }
+}
