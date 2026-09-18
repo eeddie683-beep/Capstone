@@ -1,1 +1,1 @@
-export type Place = { id: string; name: string; category: string; address: string; distance: number | null; url: string | null }
+export type Place = { id: string; name: string; category: string; address: string; distance: number | null; latitude: number | null; longitude: number | null; url: string | null }

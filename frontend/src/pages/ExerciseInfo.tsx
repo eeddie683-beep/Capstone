@@ -3,6 +3,12 @@ import Sidebar from '../components/layout/Sidebar'
 import Icon, { type IconName } from '../components/Icon'
 import dashboardStyles from './Dashboard.scss?inline'
 import './ExerciseInfo.scss'
+import AnimatedNumber from '../components/AnimatedNumber'
+import { useMovementDistance } from '../hooks/useMovementDistance'
+import { MovementRouteMap } from '../components/map/KakaoMap'
+import { useGeolocation } from '../hooks/useGeolocation'
+import { useLocationData } from '../hooks/useLocationData'
+import { dailyExerciseRecommendation } from '../utils/exerciseRecommendation'
 
 const items: { name: string; icon: IconName; color: string; description: string; tips: string[] }[] = [
   { name: '러닝', icon: 'run', color: '#675cf3', description: '심폐 지구력과 체력을 키우는 대표적인 유산소 운동입니다.', tips: ['운동 전 5분 이상 가볍게 걷기', '자신의 페이스를 유지하며 호흡하기', '운동 후 충분히 스트레칭하기'] },
@@ -14,10 +20,17 @@ const items: { name: string; icon: IconName; color: string; description: string;
 
 export default function ExerciseInfo() {
   const [selected, setSelected] = useState('러닝')
+  const location = useGeolocation()
+  const conditions = useLocationData(location.coordinates, selected)
+  const movement = useMovementDistance(true)
   const item = items.find(value => value.name === selected) ?? items[0]
+  const recommendation = dailyExerciseRecommendation(selected, conditions.weather.data, conditions.airQuality.data, conditions.uv.data)
   return <><style>{dashboardStyles}</style><div className="dashboard exercise-page dashboard-exercise"><Sidebar /><main className="content" id="top">
     <header className="welcome"><div><h1>운동 정보</h1><p><Icon name="activity" size={12} /> 운동별 추천 정보와 주의사항을 확인하세요</p></div><div className="header-actions"><a href="/dashboard">대시보드로 돌아가기</a></div></header>
     <section className="exercise-select panel"><h2>운동 선택</h2><div className="chips">{items.map(value => <button key={value.name} className={value.name === selected ? 'selected' : ''} onClick={() => setSelected(value.name)}><Icon name={value.icon} size={17} />{value.name}</button>)}</div></section>
-    <div className="exercise-info-grid"><section className="panel exercise-hero" style={{ '--exercise-color': item.color } as CSSProperties}><div className="exercise-hero-icon"><Icon name={item.icon} size={44} /></div><span className="good">추천 운동</span><h2>{item.name}</h2><p>{item.description}</p><div className="exercise-metrics"><div><b>30분</b><small>추천 시간</small></div><div><b>중간</b><small>운동 강도</small></div><div><b>250 kcal</b><small>예상 소모량</small></div></div></section><section className="panel"><div className="title-row"><h2>운동 가이드</h2><span className="level">안전하게 시작하기</span></div><p className="updated">오늘의 {item.name} 체크리스트</p><div className="exercise-tips">{item.tips.map((tip, index) => <div key={tip}><span>{index + 1}</span><p>{tip}</p></div>)}</div></section></div>
+    <div className="exercise-info-grid"><section className="panel exercise-hero" style={{ '--exercise-color': item.color } as CSSProperties}><div className="exercise-hero-icon"><Icon name={item.icon} size={44} /></div><span className="good">오늘 날씨 반영</span><h2>{item.name}</h2><p>{item.description}</p><div className="exercise-metrics"><div><b>{recommendation.minutes == null ? '—' : `${recommendation.minutes}분`}</b><small>추천 운동 시간</small></div><div><b>{recommendation.intensity}</b><small>운동 강도</small></div><div><b>{recommendation.calories == null ? '—' : `${recommendation.calories} kcal`}</b><small>예상 소모량</small></div></div></section><section className="panel"><div className="title-row"><h2>운동 가이드</h2><span className="level">안전하게 시작하기</span></div><p className="updated">오늘의 {item.name} 체크리스트</p><div className="exercise-tips">{item.tips.map((tip, index) => <div key={tip}><span>{index + 1}</span><p>{tip}</p></div>)}</div></section></div>
+    <section className="panel today-exercise-recommendation"><div className="title-row"><h2><span className="title-icon"><Icon name="sun" size={15} /></span>오늘의 {selected} 추천</h2><span className="level">{recommendation.time}</span></div><p>{recommendation.message}</p><div className="condition-summary"><span>기온 <b>{conditions.weather.data?.temperature ?? '—'}°C</b></span><span>강수확률 <b>{conditions.weather.data?.precipitation ?? '—'}%</b></span><span>자외선 <b>{conditions.uv.data ? `${conditions.uv.data.value} (${conditions.uv.data.grade})` : '—'}</b></span><span>미세먼지 PM10 <b>{conditions.airQuality.data?.pm10.value == null ? '—' : `${conditions.airQuality.data.pm10.value}㎍/㎥`} · {conditions.airQuality.data?.pm10.grade ?? '—'}</b></span><span>초미세먼지 PM2.5 <b>{conditions.airQuality.data?.pm25.value == null ? '—' : `${conditions.airQuality.data.pm25.value}㎍/㎥`} · {conditions.airQuality.data?.pm25.grade ?? '—'}</b></span></div></section>
+    <section className="panel movement-summary"><div className="movement-summary-icon"><Icon name="pin" size={24} /></div><div><p>내가 이동한 거리</p><h2><AnimatedNumber text={movement.meters < 1000 ? `${Math.round(movement.meters)} m` : `${(movement.meters / 1000).toFixed(2)} km`} /></h2><small>운동 정보 페이지를 연 이후 Geolocation으로 측정한 거리입니다.</small></div></section>
+    <section className="panel movement-map-panel"><div className="title-row"><h2><span className="title-icon"><Icon name="map" size={15} /></span>내 이동 경로</h2><span className="good">실시간</span></div><p className="updated">보라색 선은 현재 페이지를 연 이후의 이동 경로입니다.</p>{movement.error && <p className="movement-error" role="alert">{movement.error}</p>}<MovementRouteMap points={movement.points} /></section>
   </main></div></>
 }

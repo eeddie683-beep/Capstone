@@ -38,7 +38,46 @@ test('invalid coordinates and missing keys fail clearly without upstream calls',
   assert.equal((await call('/api/fitmap/weather?lat=bad&lon=127')).status, 400)
   assert.equal((await call('/api/fitmap/weather?lat=37.5&lon=127')).status, 503)
   assert.equal((await call('/api/fitmap/places?lat=37.5&lon=127')).status, 503)
+  assert.equal((await call('/api/fitmap/air-quality?lat=37.5&lon=127')).status, 503)
+  assert.equal((await call('/api/fitmap/uv?lat=37.5&lon=127')).status, 503)
   assert.equal((await call('/api/fitmap/unknown?lat=37.5&lon=127')).status, 404)
+})
+
+test('AirKorea flow finds a nearby station and normalizes measurements', async () => {
+  const original = globalThis.fetch
+  globalThis.fetch = (async input => {
+    const url = new URL(String(input))
+    if (url.hostname === 'dapi.kakao.com') return new Response(JSON.stringify({ documents: [{ x: 200000, y: 450000 }] }))
+    assert.equal(url.searchParams.get('serviceKey'), 'air/+test')
+    if (url.pathname.includes('getNearbyMsrstnList')) return new Response(JSON.stringify({ response: { header: { resultCode: '00' }, body: { items: [{ stationName: '이촌동' }, { stationName: '용산구' }] } } }))
+    const missingDust = url.searchParams.get('stationName') === '이촌동'
+    return new Response(JSON.stringify({ response: { header: { resultCode: '00' }, body: { items: [{ dataTime: '2026-09-18 10:00', khaiGrade: '2', pm10Value: missingDust ? '-' : '31', pm10Grade1h: '2', pm25Value: missingDust ? '-' : '12', pm25Grade1h: '1', o3Value: '0.021', o3Grade: '1' }] } } }))
+  }) as typeof fetch
+  try {
+    const result = await call('/api/fitmap/air-quality?lat=37.5&lon=127', { KAKAO_REST_API_KEY: 'kakao-test', AIRKOREA_SERVICE_KEY: 'air%2F%2Btest' })
+    assert.equal(result.status, 200)
+    assert.equal(result.data.stationName, '용산구')
+    assert.deepEqual(result.data.pm25, { value: 12, grade: '좋음' })
+    assert.deepEqual(result.data.ozone, { value: 0.021, grade: '좋음' })
+    assert.equal(JSON.stringify(result.data).includes('air-test'), false)
+  } finally { globalThis.fetch = original }
+})
+
+test('UV flow resolves the administrative area and normalizes the index', async () => {
+  const original = globalThis.fetch
+  globalThis.fetch = (async input => {
+    const url = new URL(String(input))
+    if (url.hostname === 'dapi.kakao.com') return new Response(JSON.stringify({ documents: [{ region_type: 'H', code: '4136057000', address_name: '경기도 남양주시 별내동' }] }))
+    assert.equal(url.pathname.endsWith('/LivingWthrIdxServiceV4/getUVIdxV4'), true)
+    assert.equal(url.searchParams.get('areaNo'), '')
+    return new Response(JSON.stringify({ response: { header: { resultCode: '00' }, body: { items: { item: [{ areaNo: '4136000000', h0: '7' }] } } } }))
+  }) as typeof fetch
+  try {
+    const result = await call('/api/fitmap/uv?lat=37.65&lon=127.12', { KAKAO_REST_API_KEY: 'kakao-test', KMA_SERVICE_KEY: 'kma-test' })
+    assert.equal(result.status, 200)
+    assert.equal(result.data.value, 7)
+    assert.equal(result.data.grade, '높음')
+  } finally { globalThis.fetch = original }
 })
 
 test('Kakao requests attach server key, encode query and normalize results', async () => {
@@ -48,12 +87,13 @@ test('Kakao requests attach server key, encode query and normalize results', asy
     assert.equal(url.origin, 'https://dapi.kakao.com')
     assert.equal(url.searchParams.get('query'), '수영장')
     assert.equal((options?.headers as Record<string, string>).Authorization, 'KakaoAK test-only')
-    return new Response(JSON.stringify({ documents: [{ id: '1', place_name: '테스트 수영장', category_name: '운동 > 수영장', address_name: '테스트 주소', distance: '1200', place_url: 'https://place.map.kakao.com/1' }] }))
+    return new Response(JSON.stringify({ documents: [{ id: '1', place_name: '테스트 수영장', category_name: '운동 > 수영장', address_name: '테스트 주소', distance: '1200', x: '127.1', y: '37.5', place_url: 'https://place.map.kakao.com/1' }] }))
   }) as typeof fetch
   try {
     const result = await call('/api/fitmap/places?lat=37.5&lon=127&exercise=수영', { KAKAO_REST_API_KEY: 'test-only' })
     assert.equal(result.status, 200)
     assert.equal(result.data[0].distance, 1200)
+    assert.equal(result.data[0].latitude, 37.5)
     assert.equal(JSON.stringify(result.data).includes('test-only'), false)
   } finally { globalThis.fetch = original }
 })

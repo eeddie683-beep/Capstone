@@ -21,7 +21,8 @@ export function useGeolocation() {
       if (id !== requestId.current) return
       setError(failure.code === 1 ? '위치 권한이 거부되었습니다. 브라우저 설정에서 허용 후 다시 시도해 주세요.' : failure.code === 3 ? '위치 확인 시간이 초과되었습니다. 다시 시도해 주세요.' : '위치를 확인할 수 없습니다. 위치 서비스를 확인해 주세요.')
       setLoading(false)
-    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 })
+    }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 })
   }, [])
+  useEffect(() => { locate() }, [locate])
   return { coordinates, loading, error, locate }
 }

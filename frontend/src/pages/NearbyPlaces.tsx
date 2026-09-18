@@ -1,6 +1,10 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import nearbyPlacesStyles from './NearbyPlaces.scss?inline'
 import Sidebar from '../components/layout/Sidebar'
+import { useGeolocation } from '../hooks/useGeolocation'
+import { getPlaces, getRegion } from '../api/kakao'
+import type { Place } from '../types/place'
+import KakaoMap from '../components/map/KakaoMap'
 
 /**
  * 주변 운동 장소 페이지
@@ -39,34 +43,46 @@ function Icon({ name, size = 18, filled = false }: { name: IconName; size?: numb
   return <svg className="icon" width={size} height={size} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
 }
 
-type Category = '전체' | '실내' | '실외'
+const exercises = ['러닝', '걷기', '자전거', '등산', '수영'] as const
+type Filter = '전체' | '실내' | '실외'
+const filters: Filter[] = ['전체', '실내', '실외']
 
-type Place = {
-  name: string
-  facility: '공원' | '산책로' | '체육관' | '체육센터' | '운동장'
-  category: '실내' | '실외'
-  distance: string
-  address: string
-  icon: IconName
+function placeType(place: Place): Exclude<Filter, '전체'> {
+  const text = `${place.name} ${place.category}`
+  return /수영장|체육관|체육센터|헬스|피트니스|요가|필라테스|실내|스포츠센터/.test(text) ? '실내' : '실외'
 }
 
-// TODO: Kakao Local API 연동 후 실제 검색 결과로 교체 예정. 지금은 화면 구성용 더미 데이터입니다.
-const places: Place[] = [
-  { name: '중랑천 산책로', facility: '산책로', category: '실외', distance: '1.2km', address: '서울 노원구 공릉동', icon: 'mountain' },
-  { name: '불암산 둘레길', facility: '산책로', category: '실외', distance: '2.3km', address: '서울 노원구 중계동', icon: 'mountain' },
-  { name: '노원구민체육센터', facility: '체육센터', category: '실내', distance: '2.8km', address: '서울 노원구 노원로', icon: 'building' },
-  { name: '상계근린공원', facility: '공원', category: '실외', distance: '0.9km', address: '서울 노원구 상계동', icon: 'tree' },
-  { name: '노원구립체육관', facility: '체육관', category: '실내', distance: '3.1km', address: '서울 노원구 동일로', icon: 'building' },
-  { name: '노원구민운동장', facility: '운동장', category: '실외', distance: '2.0km', address: '서울 노원구 초안산로', icon: 'track' },
-]
-
-const filters: Category[] = ['전체', '실내', '실외']
-
 export default function NearbyPlaces() {
-  const [filter, setFilter] = useState<Category>('전체')
+  const location = useGeolocation()
+  const [filter, setFilter] = useState<Filter>('전체')
+  const [places, setPlaces] = useState<Place[]>([])
+  const [address, setAddress] = useState('현재 위치 확인 중')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
-  const filteredPlaces = filter === '전체' ? places : places.filter((place) => place.category === filter)
+  useEffect(() => {
+    if (!location.coordinates) return
+    const controller = new AbortController()
+    setLoading(true)
+    setError(null)
+    Promise.all([
+      Promise.all(exercises.map(item => getPlaces(location.coordinates!, item, controller.signal, 15))),
+      getRegion(location.coordinates, controller.signal),
+    ]).then(([placeGroups, region]) => {
+      const unique = [...new Map(placeGroups.flat().map(place => [place.id, place])).values()]
+        .sort((a, b) => (a.distance ?? Number.MAX_SAFE_INTEGER) - (b.distance ?? Number.MAX_SAFE_INTEGER))
+      setPlaces(unique)
+      setAddress(region.address)
+    }).catch(reason => {
+      if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : '주변 장소를 불러오지 못했습니다.')
+    }).finally(() => {
+      if (!controller.signal.aborted) setLoading(false)
+    })
+    return () => controller.abort()
+  }, [location.coordinates])
+
+  const filteredPlaces = filter === '전체' ? places : places.filter(place => placeType(place) === filter)
 
   const toggleFavorite = (name: string) => {
     setFavorites((prev) => {
@@ -90,22 +106,18 @@ export default function NearbyPlaces() {
           <header className="welcome">
             <div>
               <h1>주변 운동 장소</h1>
-              <p><Icon name="pin" size={12} /> 서울특별시 노원구 <span>• 현재 위치 기준</span></p>
+              <p><Icon name="pin" size={12} /> {address} <span>{location.coordinates ? '• 현재 위치 기준' : ''}</span></p>
             </div>
             <div className="header-actions">
-              <button><Icon name="refresh" size={14} /> 새로고침</button>
+              <button onClick={location.locate} disabled={location.loading}><Icon name="refresh" size={14} /> {location.loading ? '확인 중…' : '새로고침'}</button>
               <button className="square" aria-label="알림"><Icon name="bell" size={16} /></button>
             </div>
           </header>
 
           <div className="places-layout">
             <section className="map-panel panel">
-              <div className="map-placeholder">
-                <span className="map-placeholder-icon"><Icon name="map" size={28} /></span>
-                <p>카카오맵 영역</p>
-                <small>Kakao Map API 연동 예정 — 지금은 화면 자리만 잡아둔 상태입니다</small>
-              </div>
-              <button type="button" className="locate-button">
+              {location.coordinates ? <KakaoMap coordinates={location.coordinates} places={filteredPlaces} /> : <div className="map-placeholder"><span className="map-placeholder-icon"><Icon name="map" size={28} /></span><p>현재 위치 확인 중</p><small>위치 권한을 허용하면 주변 운동 장소 지도가 표시됩니다.</small></div>}
+              <button type="button" className="locate-button" onClick={location.locate} disabled={location.loading}>
                 <Icon name="pin" size={14} /> 현재 위치로 이동
               </button>
             </section>
@@ -128,25 +140,32 @@ export default function NearbyPlaces() {
                 </div>
               </div>
 
-              <p className="list-note">※ 주변 운동 장소에는 추천 점수나 순위를 사용하지 않습니다.</p>
+              <p className="list-note">카카오 로컬 · 반경 10km · 현재 위치에서 가까운 순</p>
+
+              {location.error && <p className="empty-note" role="alert">{location.error}</p>}
+              {error && <p className="empty-note" role="alert">{error}</p>}
+              {loading && <p className="empty-note" role="status">주변 장소를 불러오는 중…</p>}
 
               <div className="place-grid">
-                {filteredPlaces.map((place) => {
-                  const isFavorited = favorites.has(place.name)
+                {!loading && filteredPlaces.map((place) => {
+                  const isFavorited = favorites.has(place.id)
+                  const category = place.category.split(' > ').at(-1) ?? place.category
+                  const type = placeType(place)
+                  const distance = place.distance == null ? '거리 미제공' : place.distance >= 1000 ? `${(place.distance / 1000).toFixed(1)}km` : `${place.distance}m`
                   return (
-                    <article key={place.name}>
-                      <span className="place-icon"><Icon name={place.icon} /></span>
+                    <article key={place.id}>
+                      <span className="place-icon"><Icon name="pin" /></span>
                       <div>
-                        <h3>{place.name}</h3>
-                        <p><span>{place.facility}</span><span className={place.category === '실내' ? 'indoor' : 'outdoor'}>{place.category}</span></p>
-                        <small><Icon name="pin" size={11} />{place.distance} · {place.address}</small>
+                        <h3>{place.url ? <a href={place.url} target="_blank" rel="noreferrer">{place.name}</a> : place.name}</h3>
+                        <p><span>{category}</span><span className={type === '실내' ? 'indoor' : 'outdoor'}>{type}</span></p>
+                        <small><Icon name="pin" size={11} />{distance} · {place.address}</small>
                       </div>
                       <button
                         type="button"
                         className={isFavorited ? 'favorited' : ''}
                         aria-pressed={isFavorited}
                         aria-label={isFavorited ? `${place.name} 즐겨찾기 해제` : `${place.name} 즐겨찾기 추가`}
-                        onClick={() => toggleFavorite(place.name)}
+                        onClick={() => toggleFavorite(place.id)}
                       >
                         <Icon name="heart" size={15} filled={isFavorited} />
                       </button>
@@ -154,8 +173,8 @@ export default function NearbyPlaces() {
                   )
                 })}
 
-                {filteredPlaces.length === 0 && (
-                  <p className="empty-note">해당 조건의 장소가 아직 없어요.</p>
+                {!loading && !error && filteredPlaces.length === 0 && (
+                  <p className="empty-note">주변에서 해당 운동 장소를 찾지 못했습니다.</p>
                 )}
               </div>
             </section>
