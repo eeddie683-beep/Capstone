@@ -3,6 +3,7 @@ package com.fitmap.backend;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.servlet.http.Cookie;
@@ -17,6 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class AuthControllerTest {
     @Autowired MockMvc mvc;
+
+    @Test
+    void rootOpensFrontend() throws Exception {
+        mvc.perform(get("/")).andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("http://localhost:5173/"));
+    }
 
     @Test
     void signupLoginAndLogout() throws Exception {
