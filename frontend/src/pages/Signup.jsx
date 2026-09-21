@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { signup, emailAvailable } from "../api/auth";
 import "./Signup.css";
 
 function Signup({ onNavigateLogin }) {
@@ -7,6 +8,9 @@ function Signup({ onNavigateLogin }) {
   const [agree2, setAgree2] = useState(false);
 
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [emailChecked, setEmailChecked] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -31,17 +35,17 @@ function Signup({ onNavigateLogin }) {
     }
   };
 
-  const handleEmailCheck = () => {
-    if (email.trim() === "") {
-      alert("이메일을 입력하세요.");
-      return;
-    }
-
-    setEmailChecked(true);
+  const handleEmailCheck = async () => {
+    try {
+      const checkedEmail = email.trim();
+      const { available } = await emailAvailable(checkedEmail);
+      if (!available) return alert("이미 가입된 이메일입니다.");
+      if (email.trim() === checkedEmail) setEmailChecked(true);
+    } catch (error) { alert(error.message); }
   };
 
   // 회원가입 완료
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!agree1 || !agree2) {
       alert("필수 약관에 동의해주세요.");
       return;
@@ -49,6 +53,11 @@ function Signup({ onNavigateLogin }) {
 
     if (!emailChecked) {
       alert("이메일 확인을 해주세요.");
+      return;
+    }
+
+    if (!name.trim() || !nickname.trim()) {
+      alert("이름과 닉네임을 입력해주세요.");
       return;
     }
 
@@ -62,12 +71,14 @@ function Signup({ onNavigateLogin }) {
       return;
     }
 
-    alert("회원가입이 완료되었습니다.");
-
-    // 로그인 화면으로 이동
-    if (onNavigateLogin) {
-      onNavigateLogin();
-    }
+    setSubmitting(true);
+    try {
+      await signup({ name, nickname, email, password, agreeTerms: agree1, agreePrivacy: agree2 });
+      alert("회원가입이 완료되었습니다.");
+      if (onNavigateLogin) onNavigateLogin();
+      else window.location.href = "/login";
+    } catch (error) { alert(error.message); }
+    finally { setSubmitting(false); }
   };
 
   return (
@@ -140,6 +151,8 @@ function Signup({ onNavigateLogin }) {
                   <input
                     type="text"
                     placeholder="이름을 입력하세요"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
               </div>
@@ -153,6 +166,8 @@ function Signup({ onNavigateLogin }) {
                   <input
                     type="text"
                     placeholder="닉네임 입력"
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
                   />
                 </div>
               </div>
@@ -346,6 +361,7 @@ function Signup({ onNavigateLogin }) {
               type="button"
               className="signup-button"
               onClick={handleSignup}
+              disabled={submitting}
             >
               회원가입 완료
               <span>→</span>

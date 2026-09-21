@@ -1,13 +1,11 @@
-FROM node:22-alpine
-
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml ./
+COPY src ./src
+RUN mvn -B -DskipTests package
 
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/fitmap-backend.jar app.jar
 EXPOSE 8080
-
-CMD ["npm", "run", "dev"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

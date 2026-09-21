@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { login } from '../api/auth'
 import './Login.scss'
 
 /**
@@ -19,7 +20,7 @@ import './Login.scss'
  *   아직 없어도 컴포넌트 단독 렌더링/테스트가 가능합니다.
  * - 회원가입 페이지에서도 동일한 패턴(onSignupSuccess, onNavigateLogin)을 쓰면
  *   나중에 App.tsx(또는 라우터 설정)에서 두 페이지를 같은 방식으로 연결할 수 있습니다.
- * - 실제 로그인 API가 정해지면 mockLoginRequest 함수만 교체하면 됩니다.
+ * - 로그인 요청은 src/api/auth.js를 통해 인증 서버에 전달합니다.
  */
 
 const initialForm = {
@@ -83,7 +84,7 @@ export default function Login({ onLoginSuccess, onNavigateSignup } = {}) {
 
     setIsSubmitting(true)
     try {
-      const user = await mockLoginRequest(form)
+      const { user } = await login(form.email, form.password, form.keepLoggedIn)
       onLoginSuccess?.(user)
     } catch (error) {
       setSubmitError(error.message || '로그인에 실패했습니다. 다시 시도해주세요.')
@@ -251,24 +252,6 @@ export default function Login({ onLoginSuccess, onNavigateSignup } = {}) {
       </div>
     </div>
   )
-}
-
-async function mockLoginRequest(credentials) {
-  // TODO: 백엔드 로그인 API 확정 후 아래 fetch 형태로 교체
-  //
-  // const response = await fetch('/api/auth/login', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ email: credentials.email, password: credentials.password }),
-  // })
-  // if (!response.ok) {
-  //   throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.')
-  // }
-  // return response.json()
-
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ email: credentials.email }), 400)
-  })
 }
 
 /* 아이콘: 외부 라이브러리 없이 인라인 SVG로 처리 (프로젝트에 아이콘 패키지 미설치) */

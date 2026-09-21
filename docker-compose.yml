@@ -1,4 +1,11 @@
 services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - auth-data:/app/data
+    restart: unless-stopped
   frontend:
     build:
       context: ./frontend
@@ -11,3 +18,9 @@ services:
       - /app/node_modules
     command: npm run dev -- --host 0.0.0.0
     restart: unless-stopped
+    environment:
+      - AUTH_API_TARGET=http://backend:8080
+    depends_on:
+      - backend
+volumes:
+  auth-data:
